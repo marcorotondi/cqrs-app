@@ -37,7 +37,7 @@ public class PowerFlowService {
     public void onPowerFlowEvent(PowerFlowEvent event) {
         log.info("Event: {}", event);
 
-        repository.findById(event.id()).ifPresentOrElse(computationEntity -> {
+        repository.findById(event.computationId()).ifPresentOrElse(computationEntity -> {
             switch (event.operation()) {
                 case POWER_FLOW_START -> {
                     computationEntity.setOperation(event.operation());
@@ -57,6 +57,7 @@ public class PowerFlowService {
                     } else {
                         commandGateway.send(new PowerFlowCommand(
                                 event.id(),
+                                event.computationId(),
                                 event.computationType(),
                                 Operation.POWER_FLOW_COMPLETED,
                                 event.index(),
@@ -71,6 +72,7 @@ public class PowerFlowService {
                     if (event.violationPresent()) {
                         commandGateway.send(new RequestCommand(
                                 event.id(),
+                                event.computationId(),
                                 event.computationType(),
                                 Operation.REQUEST_START,
                                 event.index()
@@ -78,6 +80,7 @@ public class PowerFlowService {
                     } else {
                         commandGateway.send(new PowerFlowCommand(
                                 event.id(),
+                                event.computationId(),
                                 event.computationType(),
                                 Operation.POWER_FLOW,
                                 event.index() + 1,
@@ -91,6 +94,7 @@ public class PowerFlowService {
 
                     commandGateway.send(new CompleteCommand(
                             event.id(),
+                            event.computationId(),
                             event.computationType(),
                             Operation.COMPLETED,
                             event.index()

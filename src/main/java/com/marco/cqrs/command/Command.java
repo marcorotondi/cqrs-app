@@ -7,6 +7,8 @@ public interface Command {
 
     String id();
 
+    String computationId();
+
     ComputationType computationType();
 
     Operation operation();

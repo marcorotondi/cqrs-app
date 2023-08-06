@@ -35,7 +35,7 @@ public class RequestFlowService {
     public void onRequestFlowEvent(CloneEvent event) {
         log.info("Event: {}", event);
 
-        repository.findById(event.id()).ifPresentOrElse(computationEntity -> {
+        repository.findById(event.computationId()).ifPresentOrElse(computationEntity -> {
             switch (event.operation()) {
                 case REQUEST_START -> {
                     computationEntity.setOperation(event.operation());
@@ -50,6 +50,7 @@ public class RequestFlowService {
 
                     commandGateway.send(new PowerFlowCommand(
                             event.id(),
+                            event.computationId(),
                             event.computationType(),
                             Operation.POWER_FLOW,
                             event.index() + 1,

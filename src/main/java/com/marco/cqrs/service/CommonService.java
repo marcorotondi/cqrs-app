@@ -32,12 +32,13 @@ public class CommonService {
         log.info("on event: {}", event);
         repository.addComputation(ComputationEntity.of(event));
 
-        repository.findById(event.id()).ifPresent(computationEntity -> {
+        repository.findById(event.computationId()).ifPresent(computationEntity -> {
             computationEntity.setOperation(event.operation());
             repository.updateComputation(computationEntity);
 
             final var send = commandGateway.send(new CloneCommand(
                     event.id(),
+                    event.computationId(),
                     event.computationType(),
                     Operation.CLONE_START,
                     event.index()
@@ -50,7 +51,7 @@ public class CommonService {
     public void onCompleteEvent(CompletedEvent event) {
         log.info("on event: {}", event);
 
-        repository.findById(event.id())
+        repository.findById(event.computationId())
                 .ifPresentOrElse(computationEntity -> {
                     computationEntity.setOperation(event.operation());
                     repository.updateComputation(computationEntity);

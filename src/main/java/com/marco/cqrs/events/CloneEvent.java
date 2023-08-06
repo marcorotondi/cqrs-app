@@ -9,6 +9,7 @@ import java.io.Serializable;
 public record CloneEvent(
         @TargetAggregateIdentifier
         String id,
+        String computationId,
         ComputationType computationType,
         Operation operation,
         Integer index

@@ -7,6 +7,8 @@ public interface Event {
 
     String id();
 
+    String computationId();
+
     ComputationType computationType();
 
     Operation operation();

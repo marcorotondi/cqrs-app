@@ -21,6 +21,8 @@ public class Computation implements Serializable {
     @AggregateIdentifier
     private String id;
 
+    private String computationId;
+
     private ComputationType computationType;
 
     private Operation operation;
@@ -38,6 +40,7 @@ public class Computation implements Serializable {
 
         AggregateLifecycle.apply(new InitEvent(
                 command.id(),
+                command.computationId(),
                 command.computationType(),
                 command.operation(),
                 0));
@@ -50,11 +53,13 @@ public class Computation implements Serializable {
         var event = switch (command.operation()) {
             case CLONE_START -> new CloneEvent(
                     command.id(),
+                    command.computationId(),
                     command.computationType(),
                     Operation.CLONE_START,
                     0);
             case CLONE_END -> new CloneEvent(
                     command.id(),
+                    command.computationId(),
                     command.computationType(),
                     Operation.CLONE_END,
                     0);
@@ -71,24 +76,28 @@ public class Computation implements Serializable {
         var event = switch (command.operation()) {
             case POWER_FLOW_START -> new PowerFlowEvent(
                     command.id(),
+                    command.computationId(),
                     command.computationType(),
                     Operation.POWER_FLOW_START,
                     command.index(),
                     command.haveViolation());
             case POWER_FLOW -> new PowerFlowEvent(
                     command.id(),
+                    command.computationId(),
                     command.computationType(),
                     Operation.POWER_FLOW,
                     command.index(),
                     command.haveViolation());
             case POWER_FLOW_END -> new PowerFlowEvent(
                     command.id(),
+                    command.computationId(),
                     command.computationType(),
                     Operation.POWER_FLOW_END,
                     command.index(),
                     command.haveViolation());
             case POWER_FLOW_COMPLETED -> new PowerFlowEvent(
                     command.id(),
+                    command.computationId(),
                     command.computationType(),
                     Operation.POWER_FLOW_COMPLETED,
                     command.index(),
@@ -106,11 +115,13 @@ public class Computation implements Serializable {
         var event = switch (command.operation()) {
             case REQUEST_START -> new RequestEvent(
                     command.id(),
+                    command.computationId(),
                     ComputationType.FLEXIBILITY,
                     Operation.REQUEST_START,
                     command.index());
             case REQUEST_END -> new RequestEvent(
                     command.id(),
+                    command.computationId(),
                     command.computationType(),
                     Operation.REQUEST_END,
                     command.index());
@@ -126,6 +137,7 @@ public class Computation implements Serializable {
 
         AggregateLifecycle.apply(new CloneEvent(
                 command.id(),
+                command.computationId(),
                 command.computationType(),
                 command.operation(),
                 command.index())
@@ -138,6 +150,7 @@ public class Computation implements Serializable {
 
         AggregateLifecycle.apply(new CompletedEvent(
                 command.id(),
+                command.computationId(),
                 command.computationType(),
                 command.operation(),
                 command.index())
@@ -176,7 +189,8 @@ public class Computation implements Serializable {
     }
 
     private void validateCommandInput(Command command) {
-        Assert.nonNull(command.id(), () -> "Computation ID not be null");
+        Assert.nonNull(command.id(), () -> "id not be null");
+        Assert.nonNull(command.computationId(), () -> "Computation id not be null");
         Assert.nonNull(command.computationType(), () -> "Computation Type not be null");
         Assert.nonNull(command.operation(), () -> "Computation Operation not be null");
         Assert.isTrue(command.index() >= 0, () -> "Computation index not be negative");
@@ -184,6 +198,7 @@ public class Computation implements Serializable {
 
     private void updateAggregate(Event event) {
         this.id = event.id();
+        this.computationId = event.computationId();
         this.computationType = event.computationType();
         this.operation = event.operation();
         this.index = event.index();

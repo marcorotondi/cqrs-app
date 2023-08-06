@@ -36,7 +36,7 @@ public class CloneService {
     public void onCloneEvent(CloneEvent event) {
         log.info("Event: {}", event);
 
-        repository.findById(event.id()).ifPresentOrElse(computationEntity -> {
+        repository.findById(event.computationId()).ifPresentOrElse(computationEntity -> {
             switch (event.operation()) {
                 case CLONE_START -> {
                     repository.updateComputation(ComputationEntity.of(event));
@@ -49,6 +49,7 @@ public class CloneService {
 
                     commandGateway.send(new PowerFlowCommand(
                             event.id(),
+                            event.computationId(),
                             event.computationType(),
                             Operation.POWER_FLOW_START,
                             event.index(),

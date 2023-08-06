@@ -24,14 +24,17 @@ public class EndpointComponent {
 
 
     public void callClone(Event event) {
+        /*
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        */
 
         commandGateway.send(new CloneCommand(
                 event.id(),
+                event.computationId(),
                 event.computationType(),
                 Operation.CLONE_END,
                 event.index()
@@ -39,15 +42,18 @@ public class EndpointComponent {
     }
 
     public void callFlexibilityWorker(Event event) {
+        /*
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        */
 
         final var nextCommand = switch (event.operation()) {
             case POWER_FLOW -> new PowerFlowCommand(
                     event.id(),
+                    event.computationId(),
                     event.computationType(),
                     Operation.POWER_FLOW_END,
                     event.index(),
@@ -55,6 +61,7 @@ public class EndpointComponent {
             );
             case REQUEST_START -> new RequestCommand(
                     event.id(),
+                    event.computationId(),
                     event.computationType(),
                     Operation.REQUEST_END,
                     event.index()

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api")
 public class FlowController {
@@ -24,6 +26,7 @@ public class FlowController {
     @PostMapping("/initFlow")
     public Mono<ResponseEntity<String>> startFlow() {
         commandGateway.send(new InitCommand(
+                UUID.randomUUID().toString(),
                 "DFR-20230806",
                 ComputationType.FLEXIBILITY,
                 Operation.INIT,

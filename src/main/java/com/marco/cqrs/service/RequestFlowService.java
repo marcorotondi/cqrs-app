@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class RequestFlowService {
     private static final Logger log = LoggerFactory.getLogger(RequestFlowService.class);
@@ -49,7 +51,7 @@ public class RequestFlowService {
                     repository.updateComputation(computationEntity);
 
                     commandGateway.send(new PowerFlowCommand(
-                            event.id(),
+                            UUID.randomUUID().toString(),
                             event.computationId(),
                             event.computationType(),
                             Operation.POWER_FLOW,

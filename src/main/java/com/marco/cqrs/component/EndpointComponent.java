@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class EndpointComponent {
 
@@ -33,7 +35,7 @@ public class EndpointComponent {
         */
 
         commandGateway.send(new CloneCommand(
-                event.id(),
+                UUID.randomUUID().toString(),
                 event.computationId(),
                 event.computationType(),
                 Operation.CLONE_END,
@@ -52,7 +54,7 @@ public class EndpointComponent {
 
         final var nextCommand = switch (event.operation()) {
             case POWER_FLOW -> new PowerFlowCommand(
-                    event.id(),
+                    UUID.randomUUID().toString(),
                     event.computationId(),
                     event.computationType(),
                     Operation.POWER_FLOW_END,
@@ -60,7 +62,7 @@ public class EndpointComponent {
                     Boolean.TRUE
             );
             case REQUEST_START -> new RequestCommand(
-                    event.id(),
+                    UUID.randomUUID().toString(),
                     event.computationId(),
                     event.computationType(),
                     Operation.REQUEST_END,

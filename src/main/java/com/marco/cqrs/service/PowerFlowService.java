@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class PowerFlowService {
     private static final Logger log = LoggerFactory.getLogger(PowerFlowService.class);
@@ -56,7 +58,7 @@ public class PowerFlowService {
                         endPoint.callFlexibilityWorker(event);
                     } else {
                         commandGateway.send(new PowerFlowCommand(
-                                event.id(),
+                                UUID.randomUUID().toString(),
                                 event.computationId(),
                                 event.computationType(),
                                 Operation.POWER_FLOW_COMPLETED,
@@ -71,7 +73,7 @@ public class PowerFlowService {
 
                     if (event.violationPresent()) {
                         commandGateway.send(new RequestCommand(
-                                event.id(),
+                                UUID.randomUUID().toString(),
                                 event.computationId(),
                                 event.computationType(),
                                 Operation.REQUEST_START,
@@ -79,7 +81,7 @@ public class PowerFlowService {
                         ));
                     } else {
                         commandGateway.send(new PowerFlowCommand(
-                                event.id(),
+                                UUID.randomUUID().toString(),
                                 event.computationId(),
                                 event.computationType(),
                                 Operation.POWER_FLOW,
@@ -93,7 +95,7 @@ public class PowerFlowService {
                     repository.updateComputation(computationEntity);
 
                     commandGateway.send(new CompleteCommand(
-                            event.id(),
+                            UUID.randomUUID().toString(),
                             event.computationId(),
                             event.computationType(),
                             Operation.COMPLETED,

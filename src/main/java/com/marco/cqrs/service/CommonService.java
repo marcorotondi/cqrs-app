@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class CommonService {
 
@@ -37,7 +39,7 @@ public class CommonService {
             repository.updateComputation(computationEntity);
 
             final var send = commandGateway.send(new CloneCommand(
-                    event.id(),
+                    UUID.randomUUID().toString(),
                     event.computationId(),
                     event.computationType(),
                     Operation.CLONE_START,

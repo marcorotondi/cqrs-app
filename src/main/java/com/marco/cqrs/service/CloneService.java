@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class CloneService {
 
@@ -48,7 +50,7 @@ public class CloneService {
                     repository.updateComputation(ComputationEntity.of(event));
 
                     commandGateway.send(new PowerFlowCommand(
-                            event.id(),
+                            UUID.randomUUID().toString(),
                             event.computationId(),
                             event.computationType(),
                             Operation.POWER_FLOW_START,

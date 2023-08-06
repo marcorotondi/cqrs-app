@@ -43,7 +43,7 @@ public class EndpointComponent {
 
     public void callFlexibilityWorker(Event event) {
         try {
-            Thread.sleep(1500);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

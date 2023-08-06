@@ -19,7 +19,6 @@ public class ComputationRepository {
 
     public Optional<ComputationEntity> findById(String id) {
         return Optional.ofNullable(data.get(id));
-
     }
 
     public void addComputation(ComputationEntity computationEntity) {

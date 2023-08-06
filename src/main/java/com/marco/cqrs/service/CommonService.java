@@ -5,6 +5,7 @@ import com.marco.cqrs.entity.ComputationEntity;
 import com.marco.cqrs.events.CompletedEvent;
 import com.marco.cqrs.events.InitEvent;
 import com.marco.cqrs.repository.ComputationRepository;
+import com.marco.cqrs.type.Operation;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
@@ -38,7 +39,7 @@ public class CommonService {
             final var send = commandGateway.send(new CloneCommand(
                     event.id(),
                     event.computationType(),
-                    event.operation(),
+                    Operation.CLONE_START,
                     event.index()
             ));
             log.info("send command: {}", send);

@@ -15,8 +15,6 @@ import org.axonframework.spring.stereotype.Aggregate;
 
 import java.io.Serializable;
 
-import static com.marco.cqrs.type.Operation.CLONE_START;
-
 @Aggregate
 public class Computation implements Serializable {
 
@@ -38,10 +36,10 @@ public class Computation implements Serializable {
     public Computation(InitCommand command) {
         validateCommandInput(command);
 
-        AggregateLifecycle.apply(new CloneEvent(
+        AggregateLifecycle.apply(new InitEvent(
                 command.id(),
                 command.computationType(),
-                CLONE_START,
+                command.operation(),
                 0));
     }
 

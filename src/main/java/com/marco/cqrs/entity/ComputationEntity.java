@@ -1,9 +1,11 @@
 package com.marco.cqrs.entity;
 
 
+import com.marco.cqrs.events.Event;
 import com.marco.cqrs.type.ComputationType;
 import com.marco.cqrs.type.Operation;
 
+import java.beans.Transient;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -50,6 +52,18 @@ public class ComputationEntity implements Serializable {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    @Transient
+    public static ComputationEntity of(Event event) {
+        var computationEntity = new ComputationEntity();
+
+        computationEntity.setId(event.id());
+        computationEntity.setComputationType(event.computationType());
+        computationEntity.setOperation(event.operation());
+        computationEntity.setIndex(event.index());
+
+        return computationEntity;
     }
 
     @Override

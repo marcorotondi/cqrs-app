@@ -15,6 +15,8 @@ import org.axonframework.spring.stereotype.Aggregate;
 
 import java.io.Serializable;
 
+import static com.marco.cqrs.type.Operation.CLONE_START;
+
 @Aggregate
 public class Computation implements Serializable {
 
@@ -27,8 +29,18 @@ public class Computation implements Serializable {
 
     private int index;
 
-
     protected Computation() {
+    }
+
+    @CommandHandler
+    public Computation(InitCommand command) {
+        validateCommandInput(command);
+
+        AggregateLifecycle.apply(new CloneEvent(
+                command.id(),
+                ComputationType.POWER_FLOW,
+                CLONE_START,
+                0));
     }
 
     @CommandHandler
@@ -36,11 +48,6 @@ public class Computation implements Serializable {
         validateCommandInput(command);
 
         var event = switch (command.operation()) {
-            case INIT -> new CloneEvent(
-                    command.id(),
-                    ComputationType.POWER_FLOW,
-                    Operation.INIT,
-                    0);
             case CLONE_START -> new CloneEvent(
                     command.id(),
                     ComputationType.POWER_FLOW,
@@ -141,6 +148,11 @@ public class Computation implements Serializable {
                 command.operation(),
                 command.index())
         );
+    }
+
+    @EventSourcingHandler
+    public void on(InitEvent event) {
+        updateAggregate(event);
     }
 
     @EventSourcingHandler

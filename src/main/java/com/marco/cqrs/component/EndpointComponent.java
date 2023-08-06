@@ -27,7 +27,7 @@ public class EndpointComponent {
 
     public void callClone(Event event) {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -43,13 +43,13 @@ public class EndpointComponent {
 
     public void callFlexibilityWorker(Event event) {
         try {
-            Thread.sleep(5000);
+            Thread.sleep(1500);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
         final var nextCommand = switch (event.operation()) {
-            case POWER_FLOW -> new PowerFlowCommand(
+            case POWER_FLOW_START, POWER_FLOW -> new PowerFlowCommand(
                     UUID.randomUUID().toString(),
                     event.computationId(),
                     event.computationType(),
@@ -64,7 +64,7 @@ public class EndpointComponent {
                     Operation.REQUEST_END,
                     event.index()
             );
-            default -> new RuntimeException("Error!");
+            default -> new RuntimeException("Error to call callFlexibilityWorker!");
         };
 
         commandGateway.send(nextCommand);

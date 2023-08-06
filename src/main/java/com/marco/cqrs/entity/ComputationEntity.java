@@ -58,7 +58,7 @@ public class ComputationEntity implements Serializable {
     public static ComputationEntity of(Event event) {
         var computationEntity = new ComputationEntity();
 
-        computationEntity.setId(event.id());
+        computationEntity.setId(event.computationId());
         computationEntity.setComputationType(event.computationType());
         computationEntity.setOperation(event.operation());
         computationEntity.setIndex(event.index());

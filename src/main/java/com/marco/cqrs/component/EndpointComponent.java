@@ -26,13 +26,11 @@ public class EndpointComponent {
 
 
     public void callClone(Event event) {
-        /*
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        */
 
         commandGateway.send(new CloneCommand(
                 UUID.randomUUID().toString(),
@@ -44,13 +42,11 @@ public class EndpointComponent {
     }
 
     public void callFlexibilityWorker(Event event) {
-        /*
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        */
 
         final var nextCommand = switch (event.operation()) {
             case POWER_FLOW -> new PowerFlowCommand(

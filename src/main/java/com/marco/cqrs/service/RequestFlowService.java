@@ -3,7 +3,7 @@ package com.marco.cqrs.service;
 
 import com.marco.cqrs.command.PowerFlowCommand;
 import com.marco.cqrs.component.EndpointComponent;
-import com.marco.cqrs.events.CloneEvent;
+import com.marco.cqrs.events.RequestEvent;
 import com.marco.cqrs.exception.InvalidFlowException;
 import com.marco.cqrs.repository.ComputationRepository;
 import com.marco.cqrs.type.Operation;
@@ -34,7 +34,7 @@ public class RequestFlowService {
     }
 
     @EventHandler
-    public void onRequestFlowEvent(CloneEvent event) {
+    public void onRequestFlowEvent(RequestEvent event) {
         log.info("Event: {}", event);
 
         repository.findById(event.computationId()).ifPresentOrElse(computationEntity -> {

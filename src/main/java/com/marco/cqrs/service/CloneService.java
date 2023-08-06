@@ -2,7 +2,6 @@ package com.marco.cqrs.service;
 
 import com.marco.cqrs.command.PowerFlowCommand;
 import com.marco.cqrs.component.EndpointComponent;
-import com.marco.cqrs.entity.ComputationEntity;
 import com.marco.cqrs.events.CloneEvent;
 import com.marco.cqrs.exception.InvalidFlowException;
 import com.marco.cqrs.repository.ComputationRepository;
@@ -41,13 +40,15 @@ public class CloneService {
         repository.findById(event.computationId()).ifPresentOrElse(computationEntity -> {
             switch (event.operation()) {
                 case CLONE_START -> {
-                    repository.updateComputation(ComputationEntity.of(event));
+                    computationEntity.setOperation(event.operation());
+                    repository.updateComputation(computationEntity);
 
                     // call API endpoint to start clone
                     endPoint.callClone(event);
                 }
                 case CLONE_END -> {
-                    repository.updateComputation(ComputationEntity.of(event));
+                    computationEntity.setOperation(event.operation());
+                    repository.updateComputation(computationEntity);
 
                     commandGateway.send(new PowerFlowCommand(
                             UUID.randomUUID().toString(),

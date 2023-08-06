@@ -37,15 +37,16 @@ public class CommonService {
         repository.findById(event.computationId()).ifPresent(computationEntity -> {
             computationEntity.setOperation(event.operation());
             repository.updateComputation(computationEntity);
-
-            final var send = commandGateway.send(new CloneCommand(
+            var commandToSend = new CloneCommand(
                     UUID.randomUUID().toString(),
                     event.computationId(),
                     event.computationType(),
                     Operation.CLONE_START,
                     event.index()
-            ));
-            log.info("send command: {}", send);
+            );
+
+            commandGateway.send(commandToSend);
+            log.info("send command: {}", commandToSend);
         });
     }
 

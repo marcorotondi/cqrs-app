@@ -45,7 +45,7 @@ public class EndpointComponent {
             throw new RuntimeException(e);
         }
 
-        final var nextCommand = switch (event.computationType()) {
+        final var nextCommand = switch (event.operation()) {
             case POWER_FLOW -> new PowerFlowCommand(
                     event.id(),
                     event.computationType(),
@@ -53,12 +53,13 @@ public class EndpointComponent {
                     event.index(),
                     Boolean.TRUE
             );
-            case FLEXIBILITY -> new RequestCommand(
+            case REQUEST_START -> new RequestCommand(
                     event.id(),
                     event.computationType(),
                     Operation.REQUEST_END,
                     event.index()
             );
+            default -> new RuntimeException("Error!");
         };
 
         commandGateway.send(nextCommand);

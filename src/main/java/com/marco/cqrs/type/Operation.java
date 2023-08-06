@@ -10,9 +10,7 @@ public enum Operation {
     POWER_FLOW_END,
     POWER_FLOW_COMPLETED,
     REQUEST_START,
-    REQUEST,
     REQUEST_END,
-    REQUEST_COMPLETED,
     COMPLETED,
     ERROR;
 }

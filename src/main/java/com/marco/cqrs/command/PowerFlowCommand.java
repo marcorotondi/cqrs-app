@@ -11,6 +11,7 @@ public record PowerFlowCommand(
         String id,
         ComputationType computationType,
         Operation operation,
-        Integer index
+        Integer index,
+        boolean haveViolation
 ) implements Command, Serializable {
 }

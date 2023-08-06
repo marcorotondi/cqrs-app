@@ -29,6 +29,8 @@ public class Computation implements Serializable {
 
     private int index;
 
+    private boolean violation;
+
     protected Computation() {
     }
 
@@ -73,22 +75,26 @@ public class Computation implements Serializable {
                     command.id(),
                     ComputationType.POWER_FLOW,
                     Operation.POWER_FLOW_START,
-                    command.index());
+                    command.index(),
+                    command.haveViolation());
             case POWER_FLOW -> new PowerFlowEvent(
                     command.id(),
                     ComputationType.POWER_FLOW,
                     Operation.POWER_FLOW,
-                    command.index());
+                    command.index(),
+                    command.haveViolation());
             case POWER_FLOW_END -> new PowerFlowEvent(
                     command.id(),
                     ComputationType.POWER_FLOW,
                     Operation.POWER_FLOW_END,
-                    command.index());
+                    command.index(),
+                    command.haveViolation());
             case POWER_FLOW_COMPLETED -> new PowerFlowEvent(
                     command.id(),
                     ComputationType.POWER_FLOW,
                     Operation.POWER_FLOW_COMPLETED,
-                    command.index());
+                    command.index(),
+                    command.haveViolation());
             default -> throw new InvalidFlowException("Invalid command value for operation on clone");
         };
 
@@ -105,20 +111,10 @@ public class Computation implements Serializable {
                     ComputationType.FLEXIBILITY,
                     Operation.REQUEST_START,
                     command.index());
-            case REQUEST -> new RequestEvent(
-                    command.id(),
-                    ComputationType.FLEXIBILITY,
-                    Operation.REQUEST,
-                    command.index());
             case REQUEST_END -> new RequestEvent(
                     command.id(),
                     ComputationType.POWER_FLOW,
                     Operation.REQUEST_END,
-                    command.index());
-            case REQUEST_COMPLETED -> new RequestEvent(
-                    command.id(),
-                    ComputationType.POWER_FLOW,
-                    Operation.REQUEST_COMPLETED,
                     command.index());
             default -> throw new InvalidFlowException("Invalid command value for operation on clone");
         };
@@ -163,6 +159,7 @@ public class Computation implements Serializable {
     @EventSourcingHandler
     public void on(PowerFlowEvent event) {
         updateAggregate(event);
+        this.violation = event.violationPresent();
     }
 
     @EventSourcingHandler
@@ -193,5 +190,4 @@ public class Computation implements Serializable {
         this.operation = event.operation();
         this.index = event.index();
     }
-
 }

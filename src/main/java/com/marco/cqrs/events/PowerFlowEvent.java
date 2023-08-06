@@ -11,6 +11,7 @@ public record PowerFlowEvent(
         String id,
         ComputationType computationType,
         Operation operation,
-        Integer index
+        Integer index,
+        Boolean violationPresent
 ) implements Event, Serializable {
 }

@@ -1,29 +1,28 @@
 package com.marco.cqrs.component;
 
-
 import com.marco.cqrs.command.CloneCommand;
 import com.marco.cqrs.command.PowerFlowCommand;
 import com.marco.cqrs.command.RequestCommand;
 import com.marco.cqrs.events.Event;
 import com.marco.cqrs.type.Operation;
+import java.util.UUID;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 public class EndpointComponent {
 
-    private static final Logger log = LoggerFactory.getLogger(EndpointComponent.class);
+    private static final Logger log = LoggerFactory.getLogger(
+        EndpointComponent.class
+    );
 
     private final CommandGateway commandGateway;
 
     public EndpointComponent(CommandGateway commandGateway) {
         this.commandGateway = commandGateway;
     }
-
 
     public void callClone(Event event) {
         try {
@@ -32,13 +31,15 @@ public class EndpointComponent {
             throw new RuntimeException(e);
         }
 
-        commandGateway.send(new CloneCommand(
+        commandGateway.send(
+            new CloneCommand(
                 UUID.randomUUID().toString(),
                 event.computationId(),
                 event.computationType(),
                 Operation.CLONE_END,
                 event.index()
-        ));
+            )
+        );
     }
 
     public void callFlexibilityWorker(Event event) {
@@ -48,24 +49,27 @@ public class EndpointComponent {
             throw new RuntimeException(e);
         }
 
-        final var nextCommand = switch (event.operation()) {
-            case POWER_FLOW_START, POWER_FLOW -> new PowerFlowCommand(
+        final var nextCommand =
+            switch (event.operation()) {
+                case POWER_FLOW_START, POWER_FLOW -> new PowerFlowCommand(
                     UUID.randomUUID().toString(),
                     event.computationId(),
                     event.computationType(),
                     Operation.POWER_FLOW_END,
                     event.index(),
                     Boolean.TRUE
-            );
-            case REQUEST_START -> new RequestCommand(
+                );
+                case REQUEST_START -> new RequestCommand(
                     UUID.randomUUID().toString(),
                     event.computationId(),
                     event.computationType(),
                     Operation.REQUEST_END,
                     event.index()
-            );
-            default -> new RuntimeException("Error to call callFlexibilityWorker!");
-        };
+                );
+                default -> new RuntimeException(
+                    "Error to call callFlexibilityWorker!"
+                );
+            };
 
         commandGateway.send(nextCommand);
     }
